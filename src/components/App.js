@@ -18,66 +18,26 @@ Try this with classes first, then refactor using hooks.
 // npm i --save-dev sass
 */
 
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { useEffect, useState } from "react";
+import Swapi from "./pages/Swapi"
+import Home from "./pages/Home"
+import Navbar from "./navigation/Navbar"
 
-function App() {
-  const [person, setPerson] = useState({})
-  const [planet, setPlanet] = useState({})
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
 
-    fetch("https://swapi.tech/api/people/1", {
-      signal
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setPerson(data.result.properties);
-      })
-      .catch((err) => {
-        console.error("Get Person Error: ", err);
-      });
-
-    return () => controller.abort();
-  }, []);
-
-  function phoneHome() {
-    fetch(person.homeworld)
-      .then((resolve) => resolve.json())
-      .then((data) => {setPlanet(data.result.properties)})
-
-  }
-
+export default function App() {
   return (
     <div className="App">
-      <div className="person">
-        <h1>
-          Name: {person.name || "Not Found"}
-        </h1>
-        <div>
-        <button onClick={phoneHome}>Phone Home</button>
-        </div>
-        <h1>
-          Planet: {planet.name}
-        </h1>
+      <Router>
+        <Navbar />
 
-        <h1>
-          Gender: {person.gender}
-        </h1>
-        <h1>
-          Height: {person.height}
-        </h1>
-        <h1>
-          Skin Color: {person.skin_color}
-        </h1>
-        <h1>
-          Eye Color: {person.eye_color}
-        </h1>
-        </div>
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path="/swapi" component={Swapi}/>
+          </Switch>
+      </Router>
     </div>
   );
 }
 
-export default App;
